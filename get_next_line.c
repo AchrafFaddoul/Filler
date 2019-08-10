@@ -6,12 +6,11 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 14:00:00 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/10 14:47:08 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/10 16:13:02 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 int			get_next_position(const int fd, char **p)
 {

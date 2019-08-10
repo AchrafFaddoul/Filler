@@ -6,28 +6,32 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/10 10:30:59 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/10 15:46:04 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
-int main()
+
+int		get_player(void)
 {
-	int 	fd;
-	char 	*str;
-	int		i;
+	int player;
+	char **arr;
+	char *line;
 
-	fd = 0;
+	get_next_line(0, &line);
+	arr = ft_strsplit(line, ' ');
+	player = ft_atoi(arr[2] + 1);
+	free(arr);
+	free(line);
+	return (player);
+}
+/// $$$ exec p12  : [PLAYER_NAME]
+int 	main()
+{
+	int player;
 
-	int x = 8;
-	int y = 2;
-	i = -1;
-	while (get_next_line(fd, &str) > 0)
-	{	
-		ft_putstr_fd(str, 2);
-		ft_putstr_fd("\n", 2);
-	}
-	printf("%d %d\n", 8, 2);
+	player = get_player();
+	printf("|||%d|||\n", player);
 	return (0);
 }
