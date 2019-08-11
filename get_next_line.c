@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 14:00:00 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/10 22:02:15 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/11 16:46:14 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ int			read_line(const int fd, int *r, char **p, char **line)
 	*line = ft_strsub(p[fd], 0, i);
 	tmp = p[fd];
 	p[fd] = ft_strdup(p[fd] + i + 1);
-	free(tmp);
+	ft_strdel(&tmp);
+	if ((p[fd][0] == '\0') && (*r == 1))
+		ft_strdel(&p[fd]);
 	return (1);
 }
 
@@ -58,7 +60,7 @@ int			get_next_line(const int fd, char **line)
 		buf[r] = '\0';
 		tmp = p[fd];
 		p[fd] = ft_strjoin(p[fd], buf);
-		free(tmp);
+		ft_strdel(&tmp);
 		if (ft_strchr(buf, '\n') != NULL)
 			break ;
 	}
