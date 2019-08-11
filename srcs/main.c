@@ -6,11 +6,11 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/11 17:36:16 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/11 20:47:31 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/filler.h" 
 #include <stdio.h>
 
 void 		free_two_dim_arr(char **arr, int size)
@@ -44,6 +44,11 @@ int 		check_args(char **arr, int flg)
 	if (flg == 1)
 	{
 		if (!ft_strstr(arr[0], "Plateau"))
+			return (0);
+	}
+	if (flg == 2)
+	{
+		if (!ft_strstr(arr[0], "Piece"))
 			return (0);
 	}
 	return (1);
@@ -80,7 +85,7 @@ int			get_player(int *p)
 	return (1);
 }
 
-int			get_dimensions(int *x, int *y)
+int			get_dim_board(int *x, int *y)
 {
 	char	**arr;
 	char 	*line;
@@ -118,10 +123,11 @@ char 		**create_board(int x, int y)
 	int 	i;
 
 	i = 0;
-	board = ft_memalloc(sizeof(char **) * x);
+	board = ft_memalloc(sizeof(char **) * (x + 1));
+	board[x + 1] = 0;
 	while (x)
 	{
-		board[i] = ft_memalloc(sizeof(char *) * y);
+		board[i] = ft_strnew(y);
 		i++;
 		x--;
 	}
@@ -149,35 +155,101 @@ char 		**fill_board(int x, int y)
 	return (board);
 }
 
-int 		main()
+char 		**create_token(int x, int y)
 {
-	int 	player;
-	char 	**board;
-	int 	x;
-	int 	y;
+	char 	**token;
+	int 	i;
+
+	i = 0;
+	token = ft_memalloc(sizeof(char **) * (x + 1));
+	token[x + 1] = 0;
+	while (x)
+	{
+		token[i] = ft_strnew(y);
+		i++;
+		x--;
+	}
+	return (token);
+}
+
+char 		**fill_token(int x, int y)
+{
+	char 	*line;
+	int  	i;
+	char 	**token;
+
+	i = 0;
+	token = create_board(x, y);
+	while (x)
+	{
+		get_next_line(0, &line);
+		ft_strcpy(token[i], line);
+		ft_strdel(&line);
+		i++;
+		x--;
+	}
+	return (token);
+}
+
+int			get_dim_token(int *x, int *y)
+{
+	char	**arr;
+	char 	*line;
 	int 	check;
+	int 	i;
+
+	i = 0;
+	check = 0;
+	get_next_line(0, &line);
+	arr = ft_strsplit(line, ' ');
+	while ((i < 3) && arr[i])
+		i++;
+	if (i == 3)
+	{
+		if ((check = check_args(arr, 2)))
+		{
+			*x = ft_atoi(arr[1]);
+			*y = ft_atoi(arr[2]);
+		}
+	}
+	else
+	{
+		free_two_dim_arr(arr, i + 1);
+		free(line);
+		return (-1);
+	}
+	free_two_dim_arr(arr, i + 1);
+	free(line);
+	return (1);
+}
+
+int 			main()
+{
+	t_board		board;
+	t_token		token;
+	int 		player;
+	int 		check;
 
 	player = 1;
-	x = 0;
-	y = 0;
 	check = 0;
 	check = get_player(&player);
-	check = get_dimensions(&x, &y);
 	if (check == -1)
 		return (0);
-	board = fill_board(x, y);
-	int i = 0;
-	int j = 0;
-	while (i < x)
+	while (1)
 	{
-		j = 0;
-		while (j < y)
-		{
-			write(1, &board[i][j], 1);
-			j++;
-		}
-		write(1, "\n", 1);
-		i++;
+		check = get_dim_board(&(board.x), &(board.y));
+		if (check == -1)
+			return (0);
+		board.arr = fill_board(board.x, board.y);
+		check = get_dim_token(&(token.x), &(token.y));
+		if (check == -1)
+			return (0);
+		token.piece = fill_token(token.x, token.y);
+		/*
+		 *algorithm
+		 */
+		free_two_dim_arr(board.arr, board.x);
+		free_two_dim_arr(token.piece, token.x);
 	}
 	return (0);
 }
