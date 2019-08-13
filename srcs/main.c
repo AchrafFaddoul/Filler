@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/13 16:25:07 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/13 17:10:44 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,20 @@
 #include <stdio.h>
 
 void 		free_two_dim_arr(char **arr, int size)
+{
+	int 	i;
+
+	i = 0;
+	while (size)
+	{
+		free(arr[i]);
+		i++;
+		size--;
+	}
+	free(arr);
+}
+
+void 		free_int_two_dim_arr(int **arr, int size)
 {
 	int 	i;
 
@@ -268,20 +282,7 @@ void 			surround_enemy(int **h_map, t_board board, int target, int score)
 	int 		j;
 
 	i = 0;
-		while (i < board.x)
-		{
-			j = 0;
-			while (j < board.y)
-			{
-				printf("%d", h_map[i][j]);
-				j++;
-			}
-			printf("\n");
-			i++;
-		}
-		printf("\n");
 	i = 0;
-	(void)score;
 	while (i < board.x)
 	{
 		j = 0;
@@ -378,34 +379,9 @@ int 			main(void)
 		h_map = create_h_map(board.x, board.y);
 		init_h_map(h_map, board.arr);
 		fill_h_map(h_map, board, player);
-		int i = 0;
-		int j = 0;
-		while (i < board.x)
-		{
-			j = 0;
-			while (j < board.y)
-			{
-				printf("%d", h_map[i][j]);
-				j++;
-			}
-			printf("\n");
-			i++;
-		}
-		i = 0;
-		j = 0;
-		while (i < board.x)
-		{
-			j = 0;
-			while (j < board.y)
-			{
-				printf("%c", board.arr[i][j]);
-				j++;
-			}
-			printf("\n");
-			i++;
-		}
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
+		free_int_two_dim_arr(h_map, board.x);
 		break ;
 	}
 	return (0);

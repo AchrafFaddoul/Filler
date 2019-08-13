@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/04 14:00:00 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/11 18:24:01 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/13 17:04:40 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ int			get_next_line(const int fd, char **line)
 	char			*tmp;
 	static char		*p[1];
 
-	buf = ft_strnew(BUFF_SIZE);
-	if (!line || read(fd, buf, 0) < 0 || BUFF_SIZE < 0)
+	if (!line || read(fd, &i, 0) < 0 || BUFF_SIZE < 0)
 		return (-1);
+	buf = ft_strnew(BUFF_SIZE);
 	if (p[fd] == NULL)
 		p[fd] = ft_strnew(0);
 	while ((r = read(fd, buf, BUFF_SIZE)) > 0)
