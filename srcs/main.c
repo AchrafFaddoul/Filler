@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/13 15:02:45 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/13 16:25:07 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,24 +261,93 @@ void			init_h_map(int **h_map, char **board)
 		i++;
 	}
 }
-/*
-void 			init_target(int **h_map, int target)
+
+void 			surround_enemy(int **h_map, t_board board, int target, int score)
 {
-	while ()
+	int 		i;
+	int 		j;
+
+	i = 0;
+		while (i < board.x)
+		{
+			j = 0;
+			while (j < board.y)
+			{
+				printf("%d", h_map[i][j]);
+				j++;
+			}
+			printf("\n");
+			i++;
+		}
+		printf("\n");
+	i = 0;
+	(void)score;
+	while (i < board.x)
+	{
+		j = 0;
+		while (j < board.y)
+		{
+			if (h_map[i][j] == target)
+			{
+				if ((i + 1) < board.x && h_map[i + 1][j] == 0)
+					h_map[i + 1][j] = score;
+				if ((i - 1) >= 0 && h_map[i - 1][j] == 0)
+					h_map[i - 1][j] = score;
+				if ((j + 1) < board.y && h_map[i][j + 1] == 0)
+					h_map[i][j + 1] = score;
+				if ((j - 1) >= 0 && h_map[i][j - 1] == 0)
+					h_map[i][j - 1] = score;
+				if ((i + 1) < board.x && (j + 1) < board.y && h_map[i + 1][j + 1] == 0)
+					h_map[i + 1][j + 1] = score;
+				if ((i - 1) >= 0 && (j - 1) >= 0 && h_map[i - 1][j - 1] == 0)
+					h_map[i - 1][j - 1] = score;
+				if ((j + 1) < board.y && (i - 1) >= 0 && h_map[i - 1][j + 1] == 0)
+					h_map[i - 1][j + 1] = score;
+				if ((j - 1) >= 0 && (i + 1) < board.x && h_map[i][j - 1] == 0)
+					h_map[i + 1][j - 1] = score;
+			}
+			j++;
+		}
+		i++;
+	}
 }
 
-void 			fill_h_map(int **h_map, int player)
+void 			fill_h_map(int **h_map, t_board board, int player)
 {
+	int 		i;
+	int 		j;
 	int 		target;
+	int 		score;
 
+	i = 0;
+	j = 0;
 	target = 0;
+	score = 1;
 	if (player == 1)
 		target = -2;
 	else if (player == 2)
 		target = -1;
-	init_to_zero(h_map, target);
+	while (i < board.x)
+	{
+		j = 0;
+		while (j < board.y)
+		{
+			if (h_map[i][j] == target)
+			{
+				surround_enemy(h_map, board, target, score);
+				if (target == -1 || target == -2)
+					target = 1;
+				target = score;
+				score++;
+				i = 0;
+				j = 0;
+			}
+			j++;
+		}
+		i++;
+	}
 }
-*/
+
 int 			main(void)
 {
 	t_board		board;
@@ -308,7 +377,33 @@ int 			main(void)
 		 */
 		h_map = create_h_map(board.x, board.y);
 		init_h_map(h_map, board.arr);
-	//	fill_h_map(h_map, player);
+		fill_h_map(h_map, board, player);
+		int i = 0;
+		int j = 0;
+		while (i < board.x)
+		{
+			j = 0;
+			while (j < board.y)
+			{
+				printf("%d", h_map[i][j]);
+				j++;
+			}
+			printf("\n");
+			i++;
+		}
+		i = 0;
+		j = 0;
+		while (i < board.x)
+		{
+			j = 0;
+			while (j < board.y)
+			{
+				printf("%c", board.arr[i][j]);
+				j++;
+			}
+			printf("\n");
+			i++;
+		}
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
 		break ;
