@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/15 16:32:03 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/15 16:39:34 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -458,7 +458,12 @@ t_pos				*get_stars_pos_dispatcher(t_token token)
 	free(star);
 	return (pos);
 }
+/*
+void				put_token(int **h_map, t_pos *pos)
+{
 
+}
+*/
 int 		main(void)
 {
 	t_board		board;
@@ -486,15 +491,7 @@ int 		main(void)
 		h_map = create_h_map(board.x, board.y);
 		init_h_map(h_map, board.arr);
 		fill_h_map(h_map, board, player);
-
 		pos = get_stars_pos_dispatcher(token);
-		
-		int i = 0;
-			while (i < 4)
-			{
-				printf("(%d %d)\n", pos[i].x, pos[i].y);
-				i++;
-			}
 		free(pos);
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
