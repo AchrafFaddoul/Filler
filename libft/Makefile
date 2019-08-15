@@ -6,7 +6,7 @@
 #    By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/08 09:09:52 by afaddoul          #+#    #+#              #
-#    Updated: 2019/08/15 19:18:00 by afaddoul         ###   ########.fr        #
+#    Updated: 2019/08/15 22:46:50 by afaddoul         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ OBJ = $(SRC:.c=.o)
 
 all : $(NAME)
 
-$(NAME) : $(OBJ)
+$(NAME) : $(OBJ) libft.h
 	ar rc $(NAME) $(OBJ)
 
 %.o : %.c

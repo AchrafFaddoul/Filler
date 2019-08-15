@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/15 19:18:41 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/15 23:44:29 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,21 +374,21 @@ void 			fill_h_map(int **h_map, t_board board, int player)
 	}
 }
 
-int 			count_star(t_count_star *star, t_token token)
+int 			count_star(t_count_star *star, t_token *token)
 {
 	int 		i;
 	int 		j;
 
 	i = 0;
-	while (i < token.x)
+	while (i < token->x)
 	{
 		j = 0;
-		while (j < token.y)
+		while (j < token->y)
 		{
-			if (token.piece[i][j] == '*')
+			if (token->piece[i][j] == '*')
 			{
-				star->min_x = i;
-				star->min_y = j;
+				token->min_x = i;
+				token->min_y = j;
 				star->target++;
 			}
 			j++;
@@ -398,23 +398,23 @@ int 			count_star(t_count_star *star, t_token token)
 	return (star->target);
 }
 
-void			get_min_max_coord(t_count_star *star, t_token token)
+void			get_min_max_coord(t_token *token)
 {
 	int 		i;
 	int 		j;
 
 	i = 0;
-	while (i < token.x)
+	while (i < token->x)
 	{
 		j = 0;
-		while (j < token.y)
+		while (j < token->y)
 		{
-			if (token.piece[i][j] == '*')
+			if (token->piece[i][j] == '*')
 			{
-				if (i < star->min_x)
-					star->min_x = i;
-				if (j < star->min_y)
-					star->min_y = j;
+				if (i < token->min_x)
+					token->min_x = i;
+				if (j < token->min_y)
+					token->min_y = j;
 			}
 			j++;
 		}
@@ -422,21 +422,21 @@ void			get_min_max_coord(t_count_star *star, t_token token)
 	}
 }
 
-t_pos			*get_stars_pos(t_count_star *star, t_token token, t_pos *pos)
+t_pos			*get_stars_pos(t_count_star *star, t_token *token, t_pos *pos)
 {
 	int 			i;
 	int 			j;
 
 	i = 0;
-	while (i < token.x)
+	while (i < token->x)
 	{
 		j = 0;
-		while (j < token.y)
+		while (j < token->y)
 		{
-			if (token.piece[i][j] == '*')
+			if (token->piece[i][j] == '*')
 			{
-				(pos[star->k]).x = i - star->min_x;
-				(pos[star->k]).y = j - star->min_y;
+				(pos[star->k]).x = i - token->min_x;
+				(pos[star->k]).y = j - token->min_y;
 				star->k++;
 			}
 			j++;
@@ -445,37 +445,80 @@ t_pos			*get_stars_pos(t_count_star *star, t_token token, t_pos *pos)
 	}
 	return (pos);
 }
-
-t_pos				*get_stars_pos_dispatcher(t_token token)
+t_pos				*get_stars_pos_dispatcher(t_token *token)
 {
 	t_pos			*pos;
 	t_count_star	*star;
+	int 			star_nb;
 
 	star = ft_memalloc(sizeof(t_count_star));
-	pos = ft_memalloc(sizeof(t_pos) * count_star(star, token));
-	get_min_max_coord(star, token);
+	star_nb = count_star(star, token);
+	pos = ft_memalloc(sizeof(t_pos) * star_nb);
+	get_min_max_coord(token);
 	pos = get_stars_pos(star, token, pos);
+	token->stars = star_nb;
 	free(star);
 	return (pos);
 }
-/*
-void				put_token(int **h_map, t_pos *pos)
-{
 
+t_game				get_result(t_board board, t_token token, t_pos *pos,
+		t_hmap *coord)
+{
+	int 			i;
+	int 			x;
+	int 			y;
+	int				inter;
+	t_game			game;
+
+	i = 0;
+	while (i < token.stars)
+	{
+		x = pos[i]->x + coord.i;
+		y = pos[i]->y + coord.j;
+		// check if x and y out of board
+		// check intersection (player and enemy)
+		// set min score if != -1
+		// set score to -1 in case of error
+		i++;
+	}
 }
-*/
+
+t_game				*put_token(t_board board, t_pos *pos, t_token *token)
+{
+	t_hmap			h_map;
+	int 			target;
+	int 			player;
+	t_game 			game;
+
+	h_map.i = 0;
+	player = board.player * -1;
+	if (player == -1)
+		target = -2;
+	else if (player == -2)
+		target = -1;
+	while (i < board.x)
+	{
+		h_map.j = 0;
+		while (j < board.y)
+		{
+			game = is_valid(board, token, pos, h_map);
+			j++;
+		}
+		i++;
+	}
+}
+
 int 		main(void)
 {
 	t_board		board;
 	t_token		token;
 	t_pos 		*pos;
-	int 		**h_map;
 	int 		player;
 	int 		check;
 
 	player = 1;
 	check = 0;
-	check = get_player(&player);
+	check = get_player(&(board.player));
 	if (check == -1)
 		return (0);
 	while (1)
@@ -488,20 +531,21 @@ int 		main(void)
 		if (check == -1)
 			return (0);
 		token.piece = fill_token(token.x, token.y);
-		h_map = create_h_map(board.x, board.y);
-		init_h_map(h_map, board.arr);
-		fill_h_map(h_map, board, player);
-		pos = get_stars_pos_dispatcher(token);
+		board.h_map = create_h_map(board.x, board.y);
+		init_h_map(board.h_map, board.arr);
+		fill_h_map(board.h_map, board, player);
+		pos = get_stars_pos_dispatcher(&token);
 		int i = 0;
 		while (i < 4)
 		{
 			printf("(%d %d)\n", pos[i].x, pos[i].y);
 			i++;
 		}
+		printf("%d\n", token.stars);
 		free(pos);
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
-		free_int_two_dim_arr(h_map, board.x);
+		free_int_two_dim_arr(board.h_map, board.x);
 		break ;
 	}
 	return (0);

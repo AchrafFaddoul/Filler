@@ -6,19 +6,20 @@
 #    By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/08/11 17:42:24 by afaddoul          #+#    #+#              #
-#    Updated: 2019/08/15 19:17:42 by afaddoul         ###   ########.fr        #
+#    Updated: 2019/08/15 22:45:15 by afaddoul         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = afaddoul.filler
 FLAGS = -Wextra -Wall -Werror
+HEADER_FILES = includes/filler.h includes/get_next_line.h
 
 FILES = srcs/main.c srcs/get_next_line.c
 OBJ = $(FILES:.c=.o)
 
 all: $(NAME)
 
-$(NAME) : $(OBJ)
+$(NAME) : $(OBJ) $(HEADER_FILES)
 	make -C ./libft
 	gcc $(FLAGS) $(OBJ) ./libft/libft.a -o $(NAME)
 
