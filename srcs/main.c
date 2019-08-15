@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/13 17:10:44 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/15 16:32:03 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,33 +41,6 @@ void 		free_int_two_dim_arr(int **arr, int size)
 	free(arr);
 }
 
-int 		check_args(char **arr, int flg)
-{
-	int 	check;
-
-	check = 0;
-	if (flg == 0)
-	{
-		if (!ft_strstr(arr[0], "$$$"))
-			return (0);
-		if (!ft_strstr(arr[1], "exec"))
-			return (0);
-		if (!ft_strstr(arr[2], "p"))
-			return (0);
-	}
-	if (flg == 1)
-	{
-		if (!ft_strstr(arr[0], "Plateau"))
-			return (0);
-	}
-	if (flg == 2)
-	{
-		if (!ft_strstr(arr[0], "Piece"))
-			return (0);
-	}
-	return (1);
-}
-
 int			get_player(int *p)
 {
 	char 	**arr;
@@ -83,7 +56,7 @@ int			get_player(int *p)
 		i++;
 	if (i == 5)
 	{
-		if ((check = check_args(arr, 0)))
+		if (ft_strnequ(line, "$$$ exec p", 10))
 			*p = ft_atoi(arr[2] + 1);
 		else
 			return (-1);
@@ -114,11 +87,13 @@ int			get_dim_board(int *x, int *y)
 		i++;
 	if (i == 3)
 	{
-		if ((check = check_args(arr, 1)))
+		if (ft_strnequ(line, "Plateau", 7))
 		{
 			*x = ft_atoi(arr[1]);
 			*y = ft_atoi(arr[2]);
 		}
+		else
+			return (-1);
 	}
 	else
 	{
@@ -138,7 +113,7 @@ char 		**create_board(int x, int y)
 
 	i = 0;
 	board = ft_memalloc(sizeof(char *) * (x + 1));
-	board[x + 1] = 0;
+	board[x] = 0;
 	while (x)
 	{
 		board[i] = ft_strnew(y);
@@ -148,24 +123,61 @@ char 		**create_board(int x, int y)
 	return (board);
 }
 
+int 		check_board(char **arr, int i)
+{
+	int 	j;
+
+	j = 0;
+	while (arr[i][j])
+	{
+		if (arr[i][j] != 'o' && arr[i][j] != 'O' && arr[i][j] != 'x' &&
+				arr[i][j] != 'X'  && arr[i][j] != '.')
+			return (0);
+		j++;
+	}
+	return (1);
+}
+
+int 		check_token(char **arr, int i)
+{
+	int 	j;
+
+	j = 0;
+	while (arr[i][j])
+	{
+		if (arr[i][j] != '*' && (arr[i][j] != '.'))
+			return (0);
+		j++;
+	}
+	return (1);
+}
+
 char 		**fill_board(int x, int y)
 {
 	char 	*line;
 	int  	i;
+	int 	check;
 	char 	**board;
 
 	i = 0;
-	get_next_line(0, &line);
+	check = 0;
+	check = get_next_line(0, &line);
+	if (check != 1)
+		return (NULL);
 	board = create_board(x, y);
 	ft_strdel (&line);
-	while (x)
+	while (i < x)
 	{
-		get_next_line(0, &line);
+		check = get_next_line(0, &line);
+		if (check != 1)
+			return (NULL);
 		ft_strcpy(board[i], (ft_strchr(line, ' ') + 1));
+		check = check_board(board, i);
+		if (!check)
+			return (NULL);
 		ft_strdel(&line);
 		i++;
-		x--;
-	}
+	}	
 	return (board);
 }
 
@@ -176,7 +188,7 @@ char 		**create_token(int x, int y)
 
 	i = 0;
 	token = ft_memalloc(sizeof(char *) * (x + 1));
-	token[x + 1] = 0;
+	token[x] = 0;
 	while (x)
 	{
 		token[i] = ft_strnew(y);
@@ -190,14 +202,21 @@ char 		**fill_token(int x, int y)
 {
 	char 	*line;
 	int  	i;
+	int 	check;
 	char 	**token;
 
 	i = 0;
-	token = create_board(x, y);
+	check = 0;
+	token = create_token(x, y);
 	while (x)
 	{
-		get_next_line(0, &line);
+		check = get_next_line(0, &line);
+		if (check != 1)
+			return (NULL);
 		ft_strcpy(token[i], line);
+		check = check_token(token, i);
+		if (!check)
+			return (NULL);
 		ft_strdel(&line);
 		i++;
 		x--;
@@ -220,11 +239,13 @@ int			get_dim_token(int *x, int *y)
 		i++;
 	if (i == 3)
 	{
-		if ((check = check_args(arr, 2)))
+		if (ft_strnequ(line, "Piece", 5))
 		{
 			*x = ft_atoi(arr[1]);
 			*y = ft_atoi(arr[2]);
 		}
+		else
+			return (-1);
 	}
 	else
 	{
@@ -237,7 +258,7 @@ int			get_dim_token(int *x, int *y)
 	return (1);
 }
 
-int 			**create_h_map(int x, int y)
+int 		**create_h_map(int x, int y)
 {
 	int 		**h_map;
 	int 		i;
@@ -253,7 +274,7 @@ int 			**create_h_map(int x, int y)
 	return (h_map);
 }
 
-void			init_h_map(int **h_map, char **board)
+void		init_h_map(int **h_map, char **board)
 {
 	int 		i;
 	int 		j;
@@ -276,40 +297,45 @@ void			init_h_map(int **h_map, char **board)
 	}
 }
 
-void 			surround_enemy(int **h_map, t_board board, int target, int score)
+void 		put_score(int **h_map, t_hmap map, t_board board, int score)
 {
-	int 		i;
-	int 		j;
+	if ((map.i + 1) < board.x && h_map[map.i + 1][map.j] == 0)
+		h_map[map.i + 1][map.j] = score;
+	if ((map.i - 1) >= 0 && h_map[map.i - 1][map.j] == 0)
+		h_map[map.i - 1][map.j] = score;
+	if ((map.j + 1) < board.y && h_map[map.i][map.j + 1] == 0)
+		h_map[map.i][map.j + 1] = score;
+	if ((map.j - 1) >= 0 && h_map[map.i][map.j - 1] == 0)
+		h_map[map.i][map.j - 1] = score;
+	if ((map.i + 1) < board.x && (map.j + 1) < board.y &&
+			h_map[map.i + 1][map.j + 1] == 0)
+		h_map[map.i + 1][map.j + 1] = score;
+	if ((map.i - 1) >= 0 &&
+			(map.j - 1) >= 0 && h_map[map.i - 1][map.j - 1] == 0)
+		h_map[map.i - 1][map.j - 1] = score;
+	if ((map.j + 1) < board.y && (map.i - 1) >= 0 &&
+			h_map[map.i - 1][map.j + 1] == 0)
+		h_map[map.i - 1][map.j + 1] = score;
+	if ((map.j - 1) >= 0 && (map.i + 1) < board.x &&
+			h_map[map.i][map.j - 1] == 0)
+		h_map[map.i + 1][map.j - 1] = score;
+}
 
-	i = 0;
-	i = 0;
-	while (i < board.x)
+void			surround_enemy(int **h_map, t_board board, int target, int scr)
+{
+	t_hmap		map;
+
+	map.i = 0;
+	while (map.i < board.x)
 	{
-		j = 0;
-		while (j < board.y)
+		map.j = 0;
+		while (map.j < board.y)
 		{
-			if (h_map[i][j] == target)
-			{
-				if ((i + 1) < board.x && h_map[i + 1][j] == 0)
-					h_map[i + 1][j] = score;
-				if ((i - 1) >= 0 && h_map[i - 1][j] == 0)
-					h_map[i - 1][j] = score;
-				if ((j + 1) < board.y && h_map[i][j + 1] == 0)
-					h_map[i][j + 1] = score;
-				if ((j - 1) >= 0 && h_map[i][j - 1] == 0)
-					h_map[i][j - 1] = score;
-				if ((i + 1) < board.x && (j + 1) < board.y && h_map[i + 1][j + 1] == 0)
-					h_map[i + 1][j + 1] = score;
-				if ((i - 1) >= 0 && (j - 1) >= 0 && h_map[i - 1][j - 1] == 0)
-					h_map[i - 1][j - 1] = score;
-				if ((j + 1) < board.y && (i - 1) >= 0 && h_map[i - 1][j + 1] == 0)
-					h_map[i - 1][j + 1] = score;
-				if ((j - 1) >= 0 && (i + 1) < board.x && h_map[i][j - 1] == 0)
-					h_map[i + 1][j - 1] = score;
-			}
-			j++;
+			if (h_map[map.i][map.j] == target)
+				put_score(h_map, map, board, scr);
+			map.j++;
 		}
-		i++;
+		map.i++;
 	}
 }
 
@@ -321,7 +347,6 @@ void 			fill_h_map(int **h_map, t_board board, int player)
 	int 		score;
 
 	i = 0;
-	j = 0;
 	target = 0;
 	score = 1;
 	if (player == 1)
@@ -335,13 +360,13 @@ void 			fill_h_map(int **h_map, t_board board, int player)
 		{
 			if (h_map[i][j] == target)
 			{
+				i = 0;
+				j = 0;
 				surround_enemy(h_map, board, target, score);
 				if (target == -1 || target == -2)
 					target = 1;
 				target = score;
 				score++;
-				i = 0;
-				j = 0;
 			}
 			j++;
 		}
@@ -349,10 +374,96 @@ void 			fill_h_map(int **h_map, t_board board, int player)
 	}
 }
 
-int 			main(void)
+int 			count_star(t_count_star *star, t_token token)
+{
+	int 		i;
+	int 		j;
+
+	i = 0;
+	while (i < token.x)
+	{
+		j = 0;
+		while (j < token.y)
+		{
+			if (token.piece[i][j] == '*')
+			{
+				star->min_x = i;
+				star->min_y = j;
+				star->target++;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (star->target);
+}
+
+void			get_min_max_coord(t_count_star *star, t_token token)
+{
+	int 		i;
+	int 		j;
+
+	i = 0;
+	while (i < token.x)
+	{
+		j = 0;
+		while (j < token.y)
+		{
+			if (token.piece[i][j] == '*')
+			{
+				if (i < star->min_x)
+					star->min_x = i;
+				if (j < star->min_y)
+					star->min_y = j;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
+t_pos			*get_stars_pos(t_count_star *star, t_token token, t_pos *pos)
+{
+	int 			i;
+	int 			j;
+
+	i = 0;
+	while (i < token.x)
+	{
+		j = 0;
+		while (j < token.y)
+		{
+			if (token.piece[i][j] == '*')
+			{
+				(pos[star->k]).x = i - star->min_x;
+				(pos[star->k]).y = j - star->min_y;
+				star->k++;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (pos);
+}
+
+t_pos				*get_stars_pos_dispatcher(t_token token)
+{
+	t_pos			*pos;
+	t_count_star	*star;
+
+	star = ft_memalloc(sizeof(t_count_star));
+	pos = ft_memalloc(sizeof(t_pos) * count_star(star, token));
+	get_min_max_coord(star, token);
+	pos = get_stars_pos(star, token, pos);
+	free(star);
+	return (pos);
+}
+
+int 		main(void)
 {
 	t_board		board;
 	t_token		token;
+	t_pos 		*pos;
 	int 		**h_map;
 	int 		player;
 	int 		check;
@@ -365,20 +476,26 @@ int 			main(void)
 	while (1)
 	{
 		check = get_dim_board(&(board.x), &(board.y));
-		board.arr = fill_board(board.x, board.y);
 		if (check == -1)
 			return (0);
+		board.arr = fill_board(board.x, board.y); 
 		check = get_dim_token(&(token.x), &(token.y));
-		token.piece = fill_token(token.x, token.y);
-
 		if (check == -1)
 			return (0);
-		/*
-		 *algorithm
-		 */
+		token.piece = fill_token(token.x, token.y);
 		h_map = create_h_map(board.x, board.y);
 		init_h_map(h_map, board.arr);
 		fill_h_map(h_map, board, player);
+
+		pos = get_stars_pos_dispatcher(token);
+		
+		int i = 0;
+			while (i < 4)
+			{
+				printf("(%d %d)\n", pos[i].x, pos[i].y);
+				i++;
+			}
+		free(pos);
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
 		free_int_two_dim_arr(h_map, board.x);
@@ -388,30 +505,87 @@ int 			main(void)
 }
 
 /*
-		int i = 0;
-		int j = 0;
-		while (i < board.x)
-		{
-			j = 0;
-			while (j < board.y)
-			{
-				printf("%d", h_map[i][j]);
-				j++;
-			}
-			printf("\n");
-			i++;
-		}
-		i = 0;
-		j = 0;
-		while (i < board.x)
-		{
-			j = 0;
-			while (j < board.y)
-			{
-				printf("%c", board.arr[i][j]);
-				j++;
-			}
-			printf("\n");
-			i++;
-		}
- */
+   int i = 0;
+   int j = 0;
+   while (i < board.x)
+   {
+   j = 0;
+   while (j < board.y)
+   {
+   printf("%d", h_map[i][j]);
+   j++;
+   }
+   printf("\n");
+   i++;
+   }
+   */
+
+/*
+   int i = 0;
+   int j = 0;
+   while (i < board.x)
+   {
+   j = 0;
+   while (j < board.y)
+   {
+   printf("%d", h_map[i][j]);
+   j++;
+   }
+   printf("\n");
+   i++;
+   }
+   i = 0;
+   j = 0;
+   while (i < board.x)
+   {
+   j = 0;
+   while (j < board.y)
+   {
+   printf("%c", board.arr[i][j]);
+   j++;
+   }
+   printf("\n");
+   i++;
+   }
+   int i = 0;
+   int j = 0;
+   printf("\n");
+   while (i < board.x)
+   {
+   j = 0;
+   while (j < board.y)
+   {
+   printf("%c", board.arr[i][j]);
+   j++;
+   }
+   printf("\n");
+   i++;
+   }
+   printf("\n");
+   i = 0;
+   while (i < token.x)
+   {
+   j = 0;
+   while (j < token.y)
+   {
+   printf("%c", token.piece[i][j]);
+   j++;
+   }
+   printf("\n");
+   i++;
+   }
+   printf("\n");
+   i = 0;
+   while (i < board.x)
+   {
+   j = 0;
+   while (j < board.y)
+   {
+   printf("%d", h_map[i][j]);
+   j++;
+   }
+   printf("\n");
+   i++;
+   }
+   printf("\n");
+   */
