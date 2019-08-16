@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/15 23:44:29 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/16 19:53:12 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,11 @@ int			get_player(int *p)
 	int 	i;
 
 	i = 0;
-	check = 0;
-	get_next_line(0, &line);
-	arr = ft_strsplit(line, ' ');
+	check = get_next_line(0, &line);
+	if (check != 1)
+		return (-1);
+	if (!(arr = ft_strsplit(line, ' ')))
+		return (-1);
 	while ((i < 5) && arr[i])
 		i++;
 	if (i == 5)
@@ -80,10 +82,11 @@ int			get_dim_board(int *x, int *y)
 	int 	i;
 
 	i = 0;
-	check = 0;
-	get_next_line(0, &line);
+	check = get_next_line(0, &line);
+	if (check != 1)
+		return (-1);
 	arr = ft_strsplit(line, ' ');
-	while ((i < 3) && arr[i])
+	while ((i < 3) && arr && arr[i])
 		i++;
 	if (i == 3)
 	{
@@ -461,64 +464,83 @@ t_pos				*get_stars_pos_dispatcher(t_token *token)
 	return (pos);
 }
 
-t_game				get_result(t_board board, t_token token, t_pos *pos,
-		t_hmap *coord)
+void	get_result(t_board board, t_token *token, t_hmap coord,
+		t_game *game)
 {
+	int				inter;
+	int 			score;
 	int 			i;
 	int 			x;
 	int 			y;
-	int				inter;
-	t_game			game;
 
 	i = 0;
-	while (i < token.stars)
+	inter = 0;
+	score = 0;
+	// check if x and y out of board
+	// check intersection (player and enemy)
+	// set min score if != -1
+	// set score to -1 in case of error
+	while (i < token->stars)
 	{
-		x = pos[i]->x + coord.i;
-		y = pos[i]->y + coord.j;
-		// check if x and y out of board
-		// check intersection (player and enemy)
-		// set min score if != -1
-		// set score to -1 in case of error
+		x = token->pos[i].x + coord.i;
+		y = token->pos[i].y + coord.j;
+		if ((x < 0 || x >= board.x) || (y < 0 || y >= board.y))
+			return ;
+		if (board.h_map[x][y] == board.target)
+			return ;
+		if (board.h_map[x][y] == -board.player)
+			inter++;
+		score += board.h_map[x][y];
 		i++;
+	}
+	if  (inter == 1 && score < game->score)
+	{
+		game->score = score;
+		game->x = (token->pos[0].x + coord.i) - token->min_x;
+		game->y = (token->pos[0].y + coord.j) - token->min_y - 1;
 	}
 }
 
 t_game				*put_token(t_board board, t_pos *pos, t_token *token)
 {
 	t_hmap			h_map;
-	int 			target;
+	t_game 			*game;
 	int 			player;
-	t_game 			game;
 
 	h_map.i = 0;
-	player = board.player * -1;
+	game = ft_memalloc(sizeof(t_game));
+	game->score = 5e5;
+	token->pos = pos;
+	player = -board.player;
 	if (player == -1)
-		target = -2;
+		board.target = -2;
 	else if (player == -2)
-		target = -1;
-	while (i < board.x)
+		board.target = -1;
+	while (h_map.i < board.x)
 	{
 		h_map.j = 0;
-		while (j < board.y)
+		while (h_map.j < board.y)
 		{
-			game = is_valid(board, token, pos, h_map);
-			j++;
+			get_result(board, token, h_map, game);
+			h_map.j++;
 		}
-		i++;
+		h_map.i++;
 	}
+	return (game);
 }
 
 int 		main(void)
 {
 	t_board		board;
 	t_token		token;
+	t_game		*game;
 	t_pos 		*pos;
 	int 		player;
 	int 		check;
 
 	player = 1;
 	check = 0;
-	check = get_player(&(board.player));
+	check = get_player(&player);
 	if (check == -1)
 		return (0);
 	while (1)
@@ -531,26 +553,36 @@ int 		main(void)
 		if (check == -1)
 			return (0);
 		token.piece = fill_token(token.x, token.y);
+		board.player = player;
 		board.h_map = create_h_map(board.x, board.y);
 		init_h_map(board.h_map, board.arr);
 		fill_h_map(board.h_map, board, player);
 		pos = get_stars_pos_dispatcher(&token);
-		int i = 0;
-		while (i < 4)
+		printf("here\n");
+		if (!(game = put_token(board, pos, &token)))
 		{
-			printf("(%d %d)\n", pos[i].x, pos[i].y);
-			i++;
+			free(pos);
+			return (0);
 		}
-		printf("%d\n", token.stars);
+		printf("%d %d\n", game->x, game->y);
+		free(game);
 		free(pos);
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
 		free_int_two_dim_arr(board.h_map, board.x);
-		break ;
+		//	break ;
 	}
 	return (0);
 }
 
+/*	int i = 0;
+	while (i < 4)
+	{
+	printf("(%d %d)\n", pos[i].x, pos[i].y);
+	i++;
+	}
+	printf("%d\n", token.stars);
+	*/
 /*
    int i = 0;
    int j = 0;
@@ -565,74 +597,4 @@ int 		main(void)
    printf("\n");
    i++;
    }
-   */
-
-/*
-   int i = 0;
-   int j = 0;
-   while (i < board.x)
-   {
-   j = 0;
-   while (j < board.y)
-   {
-   printf("%d", h_map[i][j]);
-   j++;
-   }
-   printf("\n");
-   i++;
-   }
-   i = 0;
-   j = 0;
-   while (i < board.x)
-   {
-   j = 0;
-   while (j < board.y)
-   {
-   printf("%c", board.arr[i][j]);
-   j++;
-   }
-   printf("\n");
-   i++;
-   }
-   int i = 0;
-   int j = 0;
-   printf("\n");
-   while (i < board.x)
-   {
-   j = 0;
-   while (j < board.y)
-   {
-   printf("%c", board.arr[i][j]);
-   j++;
-   }
-   printf("\n");
-   i++;
-   }
-   printf("\n");
-   i = 0;
-   while (i < token.x)
-   {
-   j = 0;
-   while (j < token.y)
-   {
-   printf("%c", token.piece[i][j]);
-   j++;
-   }
-   printf("\n");
-   i++;
-   }
-   printf("\n");
-   i = 0;
-   while (i < board.x)
-   {
-   j = 0;
-   while (j < board.y)
-   {
-   printf("%d", h_map[i][j]);
-   j++;
-   }
-   printf("\n");
-   i++;
-   }
-   printf("\n");
    */

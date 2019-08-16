@@ -6,7 +6,7 @@
 #    By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/08 09:09:52 by afaddoul          #+#    #+#              #
-#    Updated: 2019/08/15 22:46:50 by afaddoul         ###   ########.fr        #
+#    Updated: 2019/08/16 10:55:04 by afaddoul         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,10 +24,10 @@ $(NAME) : $(OBJ) libft.h
 	gcc $(FLAGS)  $< -o $@ -c 
 
 clean :
-	/bin/rm -f $(OBJ)
-	/bin/rm -f libft.h.gch
+	@/bin/rm -f $(OBJ)
+	@/bin/rm -f libft.h.gch
 
 fclean : clean
-	/bin/rm -f $(NAME)
+	@/bin/rm -f $(NAME)
 
 re : fclean all

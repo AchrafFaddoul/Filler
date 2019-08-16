@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 17:36:14 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/15 23:44:31 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/16 12:07:21 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@
 
 int 					get_next_line(const int fd, char **line);
 
+typedef struct 			s_pos
+{
+	int 				x;
+	int 				y;
+}						t_pos;
+
 typedef struct			s_board
 {
 	char 				**arr;
@@ -25,6 +31,7 @@ typedef struct			s_board
 	int 				x;
 	int 				y;
 	int 				player;
+	int 				target;
 }						t_board;
 
 typedef struct			s_token
@@ -35,6 +42,7 @@ typedef struct			s_token
 	int 				min_x;
 	int 				min_y;
 	int 				stars;
+	t_pos				*pos;
 }						t_token;
 
 typedef struct 			s_hmap
@@ -42,12 +50,6 @@ typedef struct 			s_hmap
 	int 				i;
 	int 				j;
 }						t_hmap;
-
-typedef struct 			s_pos
-{
-	int 				x;
-	int 				y;
-}						t_pos;
 
 typedef	struct			s_count_star
 {
