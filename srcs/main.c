@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/16 19:53:12 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/17 18:46:03 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,8 @@ void 		free_two_dim_arr(char **arr, int size)
 	int 	i;
 
 	i = 0;
-	while (size)
-	{
-		free(arr[i]);
-		i++;
-		size--;
-	}
+	while (i < size)
+		free(arr[i++]);
 	free(arr);
 }
 
@@ -32,12 +28,8 @@ void 		free_int_two_dim_arr(int **arr, int size)
 	int 	i;
 
 	i = 0;
-	while (size)
-	{
-		free(arr[i]);
-		i++;
-		size--;
-	}
+	while (i < size)
+		free(arr[i++]);
 	free(arr);
 }
 
@@ -192,11 +184,10 @@ char 		**create_token(int x, int y)
 	i = 0;
 	token = ft_memalloc(sizeof(char *) * (x + 1));
 	token[x] = 0;
-	while (x)
+	while (i < x)
 	{
 		token[i] = ft_strnew(y);
 		i++;
-		x--;
 	}
 	return (token);
 }
@@ -211,18 +202,23 @@ char 		**fill_token(int x, int y)
 	i = 0;
 	check = 0;
 	token = create_token(x, y);
-	while (x)
+	while (i < x)
 	{
 		check = get_next_line(0, &line);
 		if (check != 1)
+		{
+			free_two_dim_arr(token, x);
 			return (NULL);
+		}
 		ft_strcpy(token[i], line);
 		check = check_token(token, i);
 		if (!check)
+		{
+			free_two_dim_arr(token, x);
 			return (NULL);
+		}
 		ft_strdel(&line);
 		i++;
-		x--;
 	}
 	return (token);
 }
@@ -268,11 +264,10 @@ int 		**create_h_map(int x, int y)
 
 	i = 0;
 	h_map = ft_memalloc(sizeof(int *) * x);
-	while (x)
+	while (i < x)
 	{
 		h_map[i] = ft_memalloc(sizeof(int) * y);
 		i++;
-		x--;
 	}
 	return (h_map);
 }
@@ -454,7 +449,8 @@ t_pos				*get_stars_pos_dispatcher(t_token *token)
 	t_count_star	*star;
 	int 			star_nb;
 
-	star = ft_memalloc(sizeof(t_count_star));
+	if (!(star = ft_memalloc(sizeof(t_count_star))))
+		return (NULL);
 	star_nb = count_star(star, token);
 	pos = ft_memalloc(sizeof(t_pos) * star_nb);
 	get_min_max_coord(token);
@@ -548,17 +544,27 @@ int 		main(void)
 		check = get_dim_board(&(board.x), &(board.y));
 		if (check == -1)
 			return (0);
-		board.arr = fill_board(board.x, board.y); 
+		if (!(board.arr = fill_board(board.x, board.y)))
+				return (0);
 		check = get_dim_token(&(token.x), &(token.y));
 		if (check == -1)
 			return (0);
-		token.piece = fill_token(token.x, token.y);
+		if (!(token.piece = fill_token(token.x, token.y)))
+		{
+			free_two_dim_arr(board.arr, board.x);
+			return (0);
+		}
 		board.player = player;
 		board.h_map = create_h_map(board.x, board.y);
 		init_h_map(board.h_map, board.arr);
 		fill_h_map(board.h_map, board, player);
-		pos = get_stars_pos_dispatcher(&token);
-		printf("here\n");
+		if (!(pos = get_stars_pos_dispatcher(&token)))
+		{
+		free_two_dim_arr(board.arr, board.x);
+		free_two_dim_arr(token.piece, token.x);
+		free_int_two_dim_arr(board.h_map, board.x);
+			return (0);
+		}
 		if (!(game = put_token(board, pos, &token)))
 		{
 			free(pos);
@@ -570,7 +576,7 @@ int 		main(void)
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
 		free_int_two_dim_arr(board.h_map, board.x);
-		//	break ;
+			//break ;
 	}
 	return (0);
 }

@@ -6,12 +6,12 @@
 #    By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/08/11 17:42:24 by afaddoul          #+#    #+#              #
-#    Updated: 2019/08/16 10:54:48 by afaddoul         ###   ########.fr        #
+#    Updated: 2019/08/17 17:47:40 by afaddoul         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = afaddoul.filler
-FLAGS = -Wextra -Wall -Werror
+FLAGS = -g -Wextra -Wall -Werror
 HEADER_FILES = includes/filler.h includes/get_next_line.h
 
 FILES = srcs/main.c srcs/get_next_line.c
