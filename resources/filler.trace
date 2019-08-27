@@ -1,3 +1,4 @@
-seed = 7729
-O: timedout
-../afaddoul.filler: Segfault at 0
+seed = 1701
+../afaddoul.filler won
+Score:
+24AGAINST139

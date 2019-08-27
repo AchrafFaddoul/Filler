@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/17 18:46:03 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/26 23:22:46 by ussef            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,11 +227,9 @@ int			get_dim_token(int *x, int *y)
 {
 	char	**arr;
 	char 	*line;
-	int 	check;
 	int 	i;
 
 	i = 0;
-	check = 0;
 	get_next_line(0, &line);
 	arr = ft_strsplit(line, ' ');
 	while ((i < 3) && arr[i])
@@ -376,6 +374,40 @@ int 			count_star(t_count_star *star, t_token *token)
 {
 	int 		i;
 	int 		j;
+	int			get_y;
+
+	i = 0;
+	token->min_x = -1;
+	token->min_y = -1;
+	while (i < token->x)
+	{
+		get_y = 0;
+		j = 0;
+		while (j < token->y)
+		{
+			if (token->piece[i][j] == '*')
+			{
+				if (token->min_x == -1)
+					token->min_x = i;
+				if (token->min_y == -1)
+					token->min_y = j;
+				else if (!get_y && j < token->min_y)
+				{
+					token->min_y = j;
+					get_y = 1;
+				}
+				star->target++;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (star->target);
+}
+/*int 			count_star(t_count_star *star, t_token *token)
+{
+	int 		i;
+	int 		j;
 
 	i = 0;
 	while (i < token->x)
@@ -394,7 +426,7 @@ int 			count_star(t_count_star *star, t_token *token)
 		i++;
 	}
 	return (star->target);
-}
+}*/
 
 void			get_min_max_coord(t_token *token)
 {
@@ -492,8 +524,8 @@ void	get_result(t_board board, t_token *token, t_hmap coord,
 	if  (inter == 1 && score < game->score)
 	{
 		game->score = score;
-		game->x = (token->pos[0].x + coord.i) - token->min_x;
-		game->y = (token->pos[0].y + coord.j) - token->min_y - 1;
+		game->x = (coord.i) - token->min_x;
+		game->y = (coord.j) - token->min_y;
 	}
 }
 
@@ -570,7 +602,11 @@ int 		main(void)
 			free(pos);
 			return (0);
 		}
-		printf("%d %d\n", game->x, game->y);
+		ft_putnbr(game->x);
+		ft_putstr(" ");
+		ft_putnbr(game->y);
+		ft_putstr("\n");
+		// printf("%d %d\n", game->x, game->y);
 		free(game);
 		free(pos);
 		free_two_dim_arr(board.arr, board.x);
