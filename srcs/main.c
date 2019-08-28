@@ -6,21 +6,20 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/26 23:22:46 by ussef            ###   ########.fr       */
+/*   Updated: 2019/08/28 19:33:23 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/filler.h" 
-#include <stdio.h>
+#include "../includes/filler.h"
 
-int 		main(void)
+int				main(void)
 {
 	t_board		board;
 	t_token		token;
 	t_game		*game;
-	t_pos 		*pos;
-	int 		player;
-	int 		check;
+	t_pos		*pos;
+	int			player;
+	int			check;
 
 	player = 1;
 	check = 0;
@@ -33,7 +32,7 @@ int 		main(void)
 		if (check == -1)
 			return (0);
 		if (!(board.arr = fill_board(board.x, board.y)))
-				return (0);
+			return (0);
 		check = get_dim_token(&(token.x), &(token.y));
 		if (check == -1)
 			return (0);
@@ -48,9 +47,9 @@ int 		main(void)
 		fill_h_map(board.h_map, board, player);
 		if (!(pos = get_stars_pos_dispatcher(&token)))
 		{
-		free_two_dim_arr(board.arr, board.x);
-		free_two_dim_arr(token.piece, token.x);
-		free_int_two_dim_arr(board.h_map, board.x);
+			free_two_dim_arr(board.arr, board.x);
+			free_two_dim_arr(token.piece, token.x);
+			free_int_two_dim_arr(board.h_map, board.x);
 			return (0);
 		}
 		if (!(game = put_token(board, pos, &token)))
@@ -67,7 +66,6 @@ int 		main(void)
 		free_two_dim_arr(board.arr, board.x);
 		free_two_dim_arr(token.piece, token.x);
 		free_int_two_dim_arr(board.h_map, board.x);
-			//break ;
 	}
 	return (0);
 }
