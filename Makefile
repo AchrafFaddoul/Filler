@@ -14,7 +14,7 @@ NAME = afaddoul.filler
 FLAGS = -g -Wextra -Wall -Werror
 HEADER_FILES = includes/filler.h includes/get_next_line.h
 
-FILES = srcs/main.c srcs/get_next_line.c
+FILES = srcs/main.c srcs/free_functions.c srcs/parsing_game_data.c srcs/board.c srcs/token.c srcs/prepare.heat_map.c srcs/heat_map_algorithm.c srcs/token_processing.c  srcs/get_next_line.c
 OBJ = $(FILES:.c=.o)
 
 all: $(NAME)
