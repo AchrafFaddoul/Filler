@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/28 04:37:25 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/31 19:10:55 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ char		**fill_token(int x, int y)
 	int		check;
 	char	**token;
 
-	i = 0;
+	i = -1;
 	check = 0;
 	token = create_token(x, y);
-	while (i < x)
+	while (++i < x)
 	{
 		check = get_next_line(0, &line);
 		if (check != 1)
@@ -61,14 +61,12 @@ char		**fill_token(int x, int y)
 			return (NULL);
 		}
 		ft_strcpy(token[i], line);
-		check = check_token(token, i);
-		if (!check)
+		if (!(check = check_token(token, i)))
 		{
 			free_two_dim_arr(token, x);
 			return (NULL);
 		}
 		ft_strdel(&line);
-		i++;
 	}
 	return (token);
 }

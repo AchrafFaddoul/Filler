@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/11 17:36:14 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/28 19:58:27 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/08/31 19:07:39 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,50 +16,50 @@
 # include "../libft/libft.h"
 # include "get_next_line.h"
 
-typedef struct 		s_pos
+typedef struct		s_pos
 {
-	int 			x;
-	int 			y;
+	int				x;
+	int				y;
 }					t_pos;
 
-typedef struct		s_board
+typedef	struct		s_board
 {
-	char 			**arr;
-	int 			**h_map;
-	int 			x;
-	int 			y;
-	int 			player;
-	int 			target;
+	char			**arr;
+	int				**h_map;
+	int				x;
+	int				y;
+	int				player;
+	int				target;
 }					t_board;
 
-typedef struct		s_token
+typedef	struct		s_token
 {
-	char 			**piece;
-	int 			x;
-	int 			y;
-	int 			min_x;
-	int 			min_y;
-	int 			stars;
+	char			**piece;
+	int				x;
+	int				y;
+	int				min_x;
+	int				min_y;
+	int				stars;
 	t_pos			*pos;
 }					t_token;
 
-typedef struct 		s_hmap
+typedef	struct		s_hmap
 {
-	int 			i;
-	int 			j;
+	int				i;
+	int				j;
 }					t_hmap;
 
 typedef	struct		s_count_star
 {
-	int 			k;
-	int 			target;
+	int				k;
+	int				target;
 }					t_count_star;
 
-typedef struct 		s_game
+typedef	struct		s_game
 {
-	int 			x;
-	int 			y;
-	int 			score;
+	int				x;
+	int				y;
+	int				score;
 }					t_game;
 
 int					get_next_line(const int fd, char **line);
@@ -87,7 +87,7 @@ void				put_score(int **h_map, t_hmap map,
 void				get_result(t_board board, t_token *token,
 		t_hmap coord, t_game *game);
 t_pos				*get_stars_pos(t_count_star *star,
-		t_token *token, t_pos     *pos);
+		t_token *token, t_pos	*pos);
 void				fill_struct(int score, t_token *token, t_hmap coord,
 		t_game *game);
 t_pos				*get_stars_pos_dispatcher(t_token *token);
