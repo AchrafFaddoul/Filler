@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/31 19:10:42 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:10:12 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ int			get_player(int *p)
 	int		i;
 
 	i = 0;
-	check = get_next_line(0, &line);
-	if (check != 1)
+	if ((check = get_next_line(0, &line)) != 1)
 		return (-1);
 	if (!(arr = ft_strsplit(line, ' ')))
 		return (-1);
@@ -62,10 +61,10 @@ int			get_dim_board(int *x, int *y)
 	int		i;
 
 	i = 0;
-	check = get_next_line(0, &line);
-	if (check != 1)
+	if ((check = get_next_line(0, &line)) != 1)
 		return (-1);
-	arr = ft_strsplit(line, ' ');
+	if (!(arr = ft_strsplit(line, ' ')))
+		return (-1);
 	while ((i < 3) && arr && arr[i])
 		i++;
 	if (i == 3)
@@ -97,9 +96,11 @@ int			get_dim_token(int *x, int *y)
 	char	*line;
 	int		ret;
 	int		i;
+	int		check;
 
 	i = 0;
-	get_next_line(0, &line);
+	if ((check = get_next_line(0, &line)) != 1)
+		return (-1);
 	arr = ft_strsplit(line, ' ');
 	while ((i < 3) && arr[i])
 		i++;

@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/31 19:11:00 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:30:11 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ t_pos				*get_stars_pos_dispatcher(t_token *token)
 	if (!(star = ft_memalloc(sizeof(t_count_star))))
 		return (NULL);
 	star_nb = count_star(star, token);
-	pos = ft_memalloc(sizeof(t_pos) * star_nb);
+	if (!(pos = ft_memalloc(sizeof(t_pos) * star_nb)))
+		return (NULL);
 	get_min_coord(token);
 	pos = get_stars_pos(star, token, pos);
 	token->stars = star_nb;

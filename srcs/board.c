@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/28 18:55:31 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/09/16 11:41:12 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ char			**create_board(int x, int y)
 	int			i;
 
 	i = 0;
-	board = ft_memalloc(sizeof(char *) * (x + 1));
+	if (!(board = ft_memalloc(sizeof(char *) * (x + 1))))
+		return (NULL);
 	board[x] = 0;
 	while (x)
 	{
@@ -37,11 +38,11 @@ char			**fill_board(int x, int y)
 	char		**board;
 
 	i = 0;
-	check = 0;
 	check = get_next_line(0, &line);
 	if (check != 1)
 		return (NULL);
-	board = create_board(x, y);
+	if (!(board = create_board(x, y)))
+		return (NULL);
 	ft_strdel(&line);
 	while (i < x)
 	{

@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/31 19:10:37 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:29:42 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ int				main(void)
 	{
 		if (ft_initdata(&board, &token) == 0)
 			return (0);
-		board.h_map = create_h_map(board.x, board.y);
+		if (!(board.h_map = create_h_map(board.x, board.y)))
+			return (0);
 		init_h_map(board.h_map, board.arr);
 		fill_h_map(board.h_map, board, board.player);
 		if (!(pos = get_stars_pos_dispatcher(&token)))

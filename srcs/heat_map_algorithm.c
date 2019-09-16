@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/28 19:17:15 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/28 19:18:12 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/09/16 11:54:32 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ t_game			*put_token(t_board board, t_pos *pos, t_token *token)
 	int			player;
 
 	h_map.i = 0;
-	game = ft_memalloc(sizeof(t_game));
+	if (!(game = ft_memalloc(sizeof(t_game))))
+		return (NULL);
 	game->score = 5e5;
 	token->pos = pos;
 	player = -board.player;

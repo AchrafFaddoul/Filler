@@ -6,7 +6,7 @@
 /*   By: afaddoul <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/07 16:33:20 by afaddoul          #+#    #+#             */
-/*   Updated: 2019/08/31 19:10:49 by afaddoul         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:17:43 by afaddoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@ int				**create_h_map(int x, int y)
 	int			i;
 
 	i = 0;
-	h_map = ft_memalloc(sizeof(int *) * x);
+	if (!(h_map = ft_memalloc(sizeof(int *) * x)))
+		return (NULL);
 	while (i < x)
 	{
 		h_map[i] = ft_memalloc(sizeof(int) * y);
+		if (!h_map[i])
+			return (NULL);
 		i++;
 	}
 	return (h_map);
